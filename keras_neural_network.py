@@ -1,11 +1,11 @@
+import time
 import numpy as np
 import pandas as pd
-
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 from sklearn import metrics
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense, Activation
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.callbacks import EarlyStopping
 
 #set di file csv di partenza
 set="1"
@@ -22,10 +22,10 @@ m_sc=pd.read_csv('archive/'+set+'.mirai.scan.csv')
 m_sy=pd.read_csv('archive/'+set+'.mirai.syn.csv')
 m_u=pd.read_csv('archive/'+set+'.mirai.udp.csv')
 m_u_p=pd.read_csv('archive/'+set+'.mirai.udpplain.csv')
-print("CSV file readed")
 
 #campiona in modo casuale i csv letti
 #frac rappresenta la percentuale di campioni presi sul totale, replace=False non permette di selezionare la stessa riga
+#con sampling di tutto del 25% le prestazini peggiorano
 print("DataFrame sampling")
 benign=benign.sample(frac=0.25, replace=False)
 g_c=g_c.sample(frac=0.25, replace=False)
@@ -38,9 +38,8 @@ m_sc=m_sc.sample(frac=0.15, replace=False)
 m_sy=m_sy.sample(frac=0.25, replace=False)
 m_u=m_u.sample(frac=0.1, replace=False)
 m_u_p=m_u_p.sample(frac=0.27, replace=False)
-print("DataFrame sampled")
 
-#si aggiunge la coppia   tipo/nome file csv   ai dizionari ottenuti
+#si aggiunge la coppia   |tipo/nome file csv|   ai dizionari ottenuti
 benign['type']='benign'
 m_u['type']='mirai_udp'
 g_c['type']='gafgyt_combo'
@@ -103,9 +102,25 @@ train_data_st=data_st.values
 #labels for training
 labels=labels_full.values
 
-#Keras model
-# test/train split  25% test
-x_train_st, x_test_st, y_train_st, y_test_st = train_test_split(train_data_st, labels, test_size=0.25, random_state=42)
+
+###KERAS MODEL
+
+#VALIDATION
+
+# Train/Test split - 80/20
+#print("Validation - 80/20 split")
+#x_train_st, x_test_st, y_train_st, y_test_st = train_test_split(train_data_st, labels, test_size=0.20, random_state=42)
+
+# K-Fold Validation - k=10
+print("Validation - K-Fold Validation split (k=10)")
+kf = KFold(n_splits=10, shuffle=True)
+print(kf)
+for training_index, testing_index in kf.split(train_data_st):
+    print("TRAIN:", training_index, "TEST:", testing_index)
+    x_train_st, x_test_st = train_data_st[training_index], train_data_st[testing_index]
+    y_train_st, y_test_st = labels[training_index], labels[testing_index]
+
+
 
 #  create and fit model
 model = Sequential()
@@ -143,8 +158,11 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=5, verbose=
 #callback contiene la lista di instanze di callback
 #verbose = 2 mostra una riga di info per ogni epoca
 #epochs rappresenta il numero di epoche per cui va addestrato il modello
+start = time.time()
 model.fit(x_train_st,y_train_st,validation_data=(x_test_st,y_test_st),
           callbacks=[monitor],verbose=2,epochs=100)
+end = time.time()
+print("Training time: "+str(end - start)[0:6]+"s")
 
 # metrics
 #predict genera le predizioni in output per i campioni in input
