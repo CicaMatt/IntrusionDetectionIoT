@@ -101,59 +101,66 @@ labels = labels_full.values
 
 # VALIDATION
 
-# Train/Test split - 80/20
-print("Validation - 80/20 split")
-x_train_st, x_test_st, y_train_st, y_test_st = train_test_split(train_data_st, labels, test_size=0.20, random_state=42)
+# K-Fold Validation - k=10
+print("Validation - K-Fold Validation split (k=10)")
+kf = KFold(n_splits=10, shuffle=True)
+max = 0
+i = 1
+for training_index, testing_index in kf.split(train_data_st):
+    # print("TRAIN:", training_index, "TEST:", testing_index)
+    x_train_st, x_test_st = train_data_st[training_index], train_data_st[testing_index]
+    y_train_st, y_test_st = labels[training_index], labels[testing_index]
 
+    print("Fit n."+i.__str__())
+    # create and fit model
+    model = Sequential()
+    # il metodo add aggiunge layer alla rete neurale
+    # Dense é un tipo di layer, dove il primo valore rappresenta il numero di neuroni
+    # input_dim che costituisce il numero di colonne di train_data_st, mentre activation rappresenta la funzione di attivazione utilizzata
+    # RELU é una funzione lineare che da in output l'input diretto se esso é positivo, zero altrimenti
+    model.add(Dense(10, input_dim=train_data_st.shape[1], activation='relu'))
+    model.add(Dense(40, input_dim=train_data_st.shape[1], activation='relu'))
+    model.add(Dense(10, input_dim=train_data_st.shape[1], activation='relu'))
+    # kernel_initializer rappresenta l'inizializzatore della matrice dei pesi del kernel
+    model.add(Dense(1, kernel_initializer='normal'))
+    # softmax é una funzione di attivazione che converte un vettore di numeri in un vettore di probabilitá, dove
+    # i valori di probabilitá sono proporzionali alla reliva scala di ogni valore nel vettore
+    model.add(Dense(labels.shape[1], activation='softmax'))
 
-# create and fit model
-model = Sequential()
-# il metodo add aggiunge layer alla rete neurale
-# Dense é un tipo di layer, dove il primo valore rappresenta il numero di neuroni
-# input_dim che costituisce il numero di colonne di train_data_st, mentre activation rappresenta la funzione di attivazione utilizzata
-# RELU é una funzione lineare che da in output l'input diretto se esso é positivo, zero altrimenti
-model.add(Dense(10, input_dim=train_data_st.shape[1], activation='relu'))
-model.add(Dense(40, input_dim=train_data_st.shape[1], activation='relu'))
-model.add(Dense(10, input_dim=train_data_st.shape[1], activation='relu'))
-# kernel_initializer rappresenta l'inizializzatore della matrice dei pesi del kernel
-model.add(Dense(1, kernel_initializer='normal'))
-# softmax é una funzione di attivazione che converte un vettore di numeri in un vettore di probabilitá, dove
-# i valori di probabilitá sono proporzionali alla reliva scala di ogni valore nel vettore
-model.add(Dense(labels.shape[1], activation='softmax'))
+    # compile serve a configurare il modello per l'addestramento
+    # loss rappresenta la funzione di perdita, optimizer rappresenta l'istanza dell'optimizer
+    # categorical_crossentropy é usata come funzione di perdita per la classificazione multiclasse
+    # quando ci sono due o piú label in output
+    # adam é un metodo di stocastica gradiente di discesa basato sulla stima adattiva dei momenti di primo ordine e secondo ordine
+    model.compile(loss='categorical_crossentropy', optimizer='adam')
 
-# compile serve a configurare il modello per l'addestramento
-# loss rappresenta la funzione di perdita, optimizer rappresenta l'istanza dell'optimizer
-# categorical_crossentropy é usata come funzione di perdita per la classificazione multiclasse
-# quando ci sono due o piú label in output
-# adam é un metodo di stocastica gradiente di discesa basato sulla stima adattiva dei momenti di primo ordine e secondo ordine
-model.compile(loss='categorical_crossentropy', optimizer='adam')
+    # si istanzia un monitor che é in grado di fermare l'addestramento quando una certa metrica ha smesso di migliorare
+    # monitor rappresenta la quantitá da monitorare
+    # min_delta rappresenta il minimo cambiamento nella quantitá monitorata che va qualificata come miglioramento
+    # patience rappresenta il numero di epoche senza miglioramento dopo le quali l'addestramento sará fermato
+    # verbose=1 serve a stampare messaggi di debug
+    # mode rappresenta la modalitá di monitoraggio della quantitá in esame
+    monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=5, verbose=1, mode='auto')
 
-# si istanzia un monitor che é in grado di fermare l'addestramento quando una certa metrica ha smesso di migliorare
-# monitor rappresenta la quantitá da monitorare
-# min_delta rappresenta il minimo cambiamento nella quantitá monitorata che va qualificata come miglioramento
-# patience rappresenta il numero di epoche senza miglioramento dopo le quali l'addestramento sará fermato
-# verbose=1 serve a stampare messaggi di debug
-# mode rappresenta la modalitá di monitoraggio della quantitá in esame
-monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3, patience=5, verbose=1, mode='auto')
+    # fit addestra il modello per un certo numero di periodi (ovvero iterazioni sul dataset)
+    # primo e secondo parametro sono rispettivamente dati di input e dati obiettivo
+    # validation_data rappresenta i dati sui quali valutare la perdina e le metriche di ogni modello alla fine di ogni epoca
+    # callback contiene la lista di instanze di callback
+    # verbose = 2 mostra una riga di info per ogni epoca
+    # epochs rappresenta il numero di epoche per cui va addestrato il modello
+    start = time.time()
+    model.fit(x_train_st, y_train_st, validation_data=(x_test_st, y_test_st),
+              callbacks=[monitor], verbose=2, epochs=100)
+    end = time.time()
+    print("Training time: " + str(end - start)[0:6] + "s "+i.__str__())
 
-# fit addestra il modello per un certo numero di periodi (ovvero iterazioni sul dataset)
-# primo e secondo parametro sono rispettivamente dati di input e dati obiettivo
-# validation_data rappresenta i dati sui quali valutare la perdina e le metriche di ogni modello alla fine di ogni epoca
-# callback contiene la lista di instanze di callback
-# verbose = 2 mostra una riga di info per ogni epoca
-# epochs rappresenta il numero di epoche per cui va addestrato il modello
-start = time.time()
-model.fit(x_train_st, y_train_st, validation_data=(x_test_st, y_test_st),
-          callbacks=[monitor], verbose=2, epochs=100)
-end = time.time()
-print("Training time: " + str(end - start)[0:6] + "s")
+    # metrics
+    # predict genera le predizioni in output per i campioni in input
+    pred_st = model.predict(x_test_st)
+    # argmax restituisce gli indici dei valori massimi lungo un asse
+    pred_st = np.argmax(pred_st, axis=1)
+    y_eval_st = np.argmax(y_test_st, axis=1)
+    score_st = metrics.accuracy_score(y_eval_st, pred_st)
+    print("accuracy: {}".format(score_st)+" "+i.__str__())
 
-# metrics
-# predict genera le predizioni in output per i campioni in input
-pred_st = model.predict(x_test_st)
-# argmax restituisce gli indici dei valori massimi lungo un asse
-pred_st = np.argmax(pred_st, axis=1)
-y_eval_st = np.argmax(y_test_st, axis=1)
-score_st = metrics.accuracy_score(y_eval_st, pred_st)
-print("accuracy: {}".format(score_st))
-
+    i+=1
