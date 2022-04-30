@@ -1,12 +1,12 @@
 import time
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import KFold
 from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn import metrics
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation
+from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
 
 
@@ -83,9 +83,9 @@ data_st = data.copy()
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-for i in (data_st.columns):
+for i in data.columns:
     data_st[i] = zscore(data[i])
-#MinMaxScaler().fit_transform(data_st)
+# MinMaxScaler().fit_transform(data_st)
 # print(data_st.head(50))
 # print(data_st.tail(50))
 
@@ -116,7 +116,7 @@ for training_index, testing_index in kf.split(train_data_st):
     model = Sequential()
     # il metodo add aggiunge layer alla rete neurale
     # Dense é un tipo di layer, dove il primo valore rappresenta il numero di neuroni
-    # input_dim che costituisce il numero di colonne di train_data_st, mentre activation rappresenta la funzione di attivazione utilizzata
+    # input_dim che costituisce il numero di colonne di training_data, mentre activation rappresenta la funzione di attivazione utilizzata
     # RELU é una funzione lineare che da in output l'input diretto se esso é positivo, zero altrimenti
     model.add(Dense(10, input_dim=train_data_st.shape[1], activation='relu'))
     model.add(Dense(40, input_dim=train_data_st.shape[1], activation='relu'))
