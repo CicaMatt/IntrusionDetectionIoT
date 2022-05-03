@@ -79,12 +79,10 @@ labels_full = pd.get_dummies(data['type'], prefix='type')
 print("Deleting labels from the training dataset")
 data = data.drop(columns='type')
 
-data_st = data.copy()
-
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
 for i in data.columns:
-    data_st[i] = zscore(data[i])
+    data[i] = zscore(data[i])
 # MinMaxScaler().fit_transform(data_st)
 # print(data_st.head(50))
 # print(data_st.tail(50))
@@ -92,35 +90,50 @@ for i in data.columns:
 
 # .values restituisce una rappresentazione formato Numpy di un DataFrame, in altre parole trasforma i dati in formato tabellare in un array multidimensionale
 # training data for the neural net
-train_data_st = data_st.values
+training_data = data.values
 
 # labels for training
 labels = labels_full.values
 
 
 # test/train split  25% test
-x_train_st, x_test_st, y_train_st, y_test_st = train_test_split(
-    train_data_st, labels, test_size=0.25, random_state=42)
+x_training, x_testing, y_training, y_testing = train_test_split(training_data, labels, test_size=0.20, random_state=42)
+
 
 #second model
-model2 = Sequential()
-model2.add(Dense(32, input_dim=train_data_st.shape[1], activation='relu'))
-model2.add(Dense(72, input_dim=train_data_st.shape[1], activation='relu'))
-model2.add(Dense(32, input_dim=train_data_st.shape[1], activation='relu'))
-model2.add(Dense(1, kernel_initializer='normal'))
-model2.add(Dense(labels.shape[1],activation='softmax'))
-model2.compile(loss='categorical_crossentropy', optimizer='adam')
+model = Sequential()
+model.add(Dense(32, input_dim=training_data.shape[1], activation='relu'))
+model.add(Dense(72, input_dim=training_data.shape[1], activation='relu'))
+model.add(Dense(32, input_dim=training_data.shape[1], activation='relu'))
+model.add(Dense(1, kernel_initializer='normal'))
+model.add(Dense(labels.shape[1], activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='adam')
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-3,
                         patience=5, verbose=1, mode='auto')
-model2.fit(x_train_st,y_train_st,validation_data=(x_test_st,y_test_st),
-          callbacks=[monitor],verbose=2,epochs=100)
 
-# metrics
-pred_st = model2.predict(x_test_st)
-pred_st = np.argmax(pred_st,axis=1)
-y_eval_st = np.argmax(y_test_st,axis=1)
-score_st = metrics.accuracy_score(y_eval_st, pred_st)
-print("accuracy: {}".format(score_st))
+start = time.time()
+model.fit(x_training, y_training, validation_data=(x_testing, y_testing),
+          callbacks=[monitor], verbose=2, epochs=100)
+
+print("\nTraining time: " + str(time.time() - start)[0:7] + "s")
+
+# PREDICTION
+# predict genera le predizioni in output per i campioni in input
+prediction = model.predict(x_testing)
+print("Total time: " + str(time.time() - start)[0:7] + "s\n")
+
+# METRICS
+# argmax restituisce gli indici dei valori massimi lungo un asse
+prediction = np.argmax(prediction, axis=1)
+truth = np.argmax(y_testing, axis=1)
+accuracy_score = metrics.accuracy_score(truth, prediction)
+precision_score = metrics.precision_score(truth, prediction, average='weighted', zero_division=0)
+recall_score = metrics.recall_score(truth, prediction, average='weighted')
+f1_score = metrics.f1_score(truth, prediction, average="weighted")
+print("Accuracy: "+"{:.2%}".format(float(accuracy_score)))
+print("Precision: "+"{:.2%}".format(float(precision_score)))
+print("Recall: "+"{:.2%}".format(float(recall_score)))
+print("F1: "+"{:.2%}".format(float(f1_score)))
 
 
 

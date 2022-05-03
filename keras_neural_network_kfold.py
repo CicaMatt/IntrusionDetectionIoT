@@ -104,12 +104,18 @@ labels = labels_full.values
 # K-Fold Validation - k=10
 print("Validation - K-Fold Validation split (k=10)")
 kf = KFold(n_splits=10, shuffle=True)
-max = 0
+print(kf.get_n_splits())
 i = 1
+
+accuracy_score_tot = 0
+precision_score_tot = 0
+recall_score_tot = 0
+f1_score_tot = 0
+
 for training_index, testing_index in kf.split(train_data_st):
     # print("TRAIN:", training_index, "TEST:", testing_index)
-    x_train_st, x_test_st = train_data_st[training_index], train_data_st[testing_index]
-    y_train_st, y_test_st = labels[training_index], labels[testing_index]
+    x_training, x_testing = train_data_st[training_index], train_data_st[testing_index]
+    y_training, y_testing = labels[training_index], labels[testing_index]
 
     print("Fit n."+i.__str__())
     # create and fit model
@@ -149,18 +155,35 @@ for training_index, testing_index in kf.split(train_data_st):
     # verbose = 2 mostra una riga di info per ogni epoca
     # epochs rappresenta il numero di epoche per cui va addestrato il modello
     start = time.time()
-    model.fit(x_train_st, y_train_st, validation_data=(x_test_st, y_test_st),
-              callbacks=[monitor], verbose=2, epochs=100)
+    model.fit(x_training, y_training, validation_data=(x_testing, y_testing),
+              callbacks=[monitor], verbose=2, epochs=50)
     end = time.time()
-    print("Training time: " + str(end - start)[0:6] + "s "+i.__str__())
+    print("Training time (Fit "+i.__str__()+"): " + str(end - start)[0:6] + "s "+i.__str__())
 
-    # metrics
+    # PREDICTION
     # predict genera le predizioni in output per i campioni in input
-    pred_st = model.predict(x_test_st)
-    # argmax restituisce gli indici dei valori massimi lungo un asse
-    pred_st = np.argmax(pred_st, axis=1)
-    y_eval_st = np.argmax(y_test_st, axis=1)
-    score_st = metrics.accuracy_score(y_eval_st, pred_st)
-    print("accuracy: {}".format(score_st)+" "+i.__str__())
+    prediction = model.predict(x_testing)
+    print("Total time (Fit "+i.__str__()+"): " + str(time.time() - start)[0:7] + "s\n")
 
+    # METRICS
+    # argmax restituisce gli indici dei valori massimi lungo un asse
+    prediction = np.argmax(prediction, axis=1)
+    truth = np.argmax(y_testing, axis=1)
+    accuracy_score = metrics.accuracy_score(truth, prediction)
+    precision_score = metrics.precision_score(truth, prediction, average='weighted', zero_division=0)
+    recall_score = metrics.recall_score(truth, prediction, average='weighted')
+    f1_score = metrics.f1_score(truth, prediction, average="weighted")
+    print("Accuracy (Fit "+i.__str__()+"): " + "{:.2%}".format(float(accuracy_score)))
+    print("Precision (Fit "+i.__str__()+"): " + "{:.2%}".format(float(precision_score)))
+    print("Recall (Fit "+i.__str__()+"): " + "{:.2%}".format(float(recall_score)))
+    print("F1 (Fit "+i.__str__()+"): " + "{:.2%}".format(float(f1_score)))
+    accuracy_score_tot += accuracy_score
+    precision_score_tot += precision_score
+    recall_score_tot += recall_score
+    f1_score_tot += f1_score
     i+=1
+
+print("\n\nAccuracy (Total mean): " + "{:.2%}".format(float(accuracy_score_tot/kf.n_splits)))
+print("Precision (Total mean): " + "{:.2%}".format(float(precision_score_tot/kf.n_splits)))
+print("Recall (Total mean): " + "{:.2%}".format(float(recall_score_tot/kf.n_splits)))
+print("F1 (Total mean): " + "{:.2%}".format(float(f1_score_tot/kf.n_splits)))
