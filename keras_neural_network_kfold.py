@@ -173,10 +173,15 @@ for training_index, testing_index in kf.split(train_data_st):
     precision_score = metrics.precision_score(truth, prediction, average='weighted', zero_division=0)
     recall_score = metrics.recall_score(truth, prediction, average='weighted')
     f1_score = metrics.f1_score(truth, prediction, average="weighted")
+    confusion_matrix = metrics.confusion_matrix(truth, prediction)
+
     print("Accuracy (Fit "+i.__str__()+"): " + "{:.2%}".format(float(accuracy_score)))
     print("Precision (Fit "+i.__str__()+"): " + "{:.2%}".format(float(precision_score)))
     print("Recall (Fit "+i.__str__()+"): " + "{:.2%}".format(float(recall_score)))
     print("F1 (Fit "+i.__str__()+"): " + "{:.2%}".format(float(f1_score)))
+    print("Confusion Matrix (Fit "+i.__str__()+"):")
+    print(confusion_matrix)
+
     accuracy_score_tot += accuracy_score
     precision_score_tot += precision_score
     recall_score_tot += recall_score

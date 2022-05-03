@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from scipy.stats import zscore
 from sklearn.preprocessing import MinMaxScaler
-from sklearn import metrics, ensemble
+from sklearn import metrics, naive_bayes
 
 
 # reading CSV files based on given 'set' and instantiate a DataFrame
@@ -97,8 +97,11 @@ labels = labels_full.values
 # Train/Test split - 80/20
 print("Validation - 80/20 split")
 x_training, x_testing, y_training, y_testing = train_test_split(training_data, labels, test_size=0.20, random_state=42)
+y_training = np.argmax(y_training, axis=1)
 
-model = ensemble.RandomForestClassifier(criterion="entropy", random_state=100, min_samples_leaf=5, warm_start=True)
+
+# model = naive_bayes.BernoulliNB()
+model = naive_bayes.GaussianNB()
 
 start = time.time()
 model.fit(x_training, y_training)
@@ -109,9 +112,8 @@ print("\nTraining time: " + str(time.time() - start)[0:7] + "s")
 prediction = model.predict(x_testing)
 print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
+
 # METRICS
-# argmax restituisce gli indici dei valori massimi lungo un asse
-prediction = np.argmax(prediction, axis=1)
 truth = np.argmax(y_testing, axis=1)
 accuracy_score = metrics.accuracy_score(truth, prediction)
 precision_score = metrics.precision_score(truth, prediction, average='weighted', zero_division=0)
