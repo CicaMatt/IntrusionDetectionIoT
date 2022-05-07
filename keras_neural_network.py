@@ -8,6 +8,7 @@ from sklearn import metrics
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
+import seaborn
 
 
 # reading CSV files based on given 'set' and instantiate a DataFrame
