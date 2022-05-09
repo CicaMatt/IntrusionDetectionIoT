@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import seaborn
 from matplotlib import pyplot as plt
@@ -37,10 +36,16 @@ m_u_p['type'] = 'mirai_udpplain'
 print("Concatenating all DataFrames into one")
 data = pd.concat([benign, m_u, g_c, g_j, g_s, g_t, g_u, m_a, m_sc, m_sy, m_u_p], sort=False, ignore_index=True)
 
+
+# Correlation matrix
+print("Correlation matrix:")
 correlation_matrix = data.corr()
-k = 11 #number of variables for heatmap
-cols = correlation_matrix.nlargest(k, 'HpHp_L1_mean')['H_L1_weight'].index
-cm = np.corrcoef(data[cols].values.T)
-seaborn.set(font_scale=1.25)
-hm = seaborn.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
+plt.subplots(figsize=(35, 25))
+seaborn.heatmap(correlation_matrix, vmax=.8, square=True)
+plt.show()
+
+# Scatter plot
+print("Scatter plot:")
+seaborn.set()
+seaborn.pairplot(data[list(data.columns)].sample(n=10, replace=False), height=2.5)
 plt.show()
