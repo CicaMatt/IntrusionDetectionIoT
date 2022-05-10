@@ -2,9 +2,8 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.stats import zscore
-from sklearn.preprocessing import MinMaxScaler
-from sklearn import metrics
+from sklearn.feature_selection import SelectKBest, chi2, f_classif
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
@@ -12,7 +11,7 @@ from utils.data_setup import DataSetup
 from utils.metrics import Metrics
 
 # Data retrieving
-data = DataSetup.data_setup(5)
+data = DataSetup.data_setup(1)
 
 # Removing all duplicates
 data = data.drop_duplicates()
@@ -38,12 +37,9 @@ data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-for i in data.columns:
-    data[i] = zscore(data[i])
-# data = MinMaxScaler().fit_transform(data)
-# data = pd.DataFrame(data)
-
-
+# data = StandardScaler().fit_transform(data)
+data = MinMaxScaler().fit_transform(data)
+data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net
@@ -51,6 +47,9 @@ training_data = data.values
 
 # labels for training
 labels = labels_full.values
+
+# data = SelectKBest(chi2, k=50).fit_transform(training_data, labels)
+# print(data.shape[1])
 
 ###KERAS MODEL
 

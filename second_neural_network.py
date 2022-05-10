@@ -2,9 +2,7 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn import metrics
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
@@ -38,11 +36,9 @@ data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-for i in data.columns:
-    data[i] = zscore(data[i])
-# MinMaxScaler().fit_transform(data_st)
-# print(data_st.head(50))
-# print(data_st.tail(50))
+data = StandardScaler().fit_transform(data)
+# data = MinMaxScaler().fit_transform(data)
+data = pd.DataFrame(data)
 
 
 # .values restituisce una rappresentazione formato Numpy di un DataFrame, in altre parole trasforma i dati in formato tabellare in un array multidimensionale

@@ -1,12 +1,8 @@
 import time
 import numpy as np
 import pandas as pd
-import seaborn
-from matplotlib import pyplot as plt
-from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
-from scipy.stats import zscore
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn import metrics, tree
 from utils.data_setup import DataSetup
 from utils.metrics import Metrics
@@ -37,9 +33,8 @@ data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-# for i in data.columns:
-#     data[i] = zscore(data[i])
-data = MinMaxScaler().fit_transform(data)
+data = StandardScaler().fit_transform(data)
+# data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy

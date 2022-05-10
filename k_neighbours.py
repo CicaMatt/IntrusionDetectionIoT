@@ -2,14 +2,15 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.stats import zscore
 from sklearn.preprocessing import MinMaxScaler
 from sklearn import neighbors
 from utils.data_setup import DataSetup
 from utils.metrics import Metrics
+from sklearn.feature_selection import SelectKBest, chi2
+
 
 # Data retrieving
-data = DataSetup.data_setup(5)
+data = DataSetup.data_setup(1)
 
 # Data preparation
 # Removing all duplicates
@@ -48,6 +49,8 @@ training_data = data.values
 
 # labels for training
 labels = labels_full.values
+
+data = SelectKBest(chi2, k=50).fit_transform(training_data, labels)
 
 
 # VALIDATION

@@ -10,9 +10,9 @@ labels = ['benign', 'gafgyt_combo', 'gafgyt_junk', 'gafgyt_scan', 'gafgyt_tcp',
 
 
 class Metrics:
-    def metrics(y_testing, prediction):
+    def metrics(y_testing, prediction, flag=0):
         # argmax restituisce gli indici dei valori massimi lungo un asse
-        if isinstance(prediction, pd.DataFrame):
+        if flag==0:
             prediction = np.argmax(prediction, axis=1)
         truth = np.argmax(y_testing, axis=1)
         accuracy_score = metrics.accuracy_score(truth, prediction)
@@ -26,9 +26,10 @@ class Metrics:
         print("Precision: " + "{:.2%}".format(float(precision_score)))
         print("Recall: " + "{:.2%}".format(float(recall_score)))
         print("F1: " + "{:.2%}".format(float(f1_score)))
-        # print("Confusion Matrix:")
+
+        print("\nConfusion Matrix generated")
         # print(confusion_matrix)
-        print("\nMultilabel Confusion Matrix:")
+        print("Multilabel Confusion Matrix:")
         print(multilabel_confusion_matrix)
 
         # Seaborn confusion matrix
