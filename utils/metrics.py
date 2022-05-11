@@ -10,7 +10,7 @@ labels = ['benign', 'gafgyt_combo', 'gafgyt_junk', 'gafgyt_scan', 'gafgyt_tcp',
 
 
 class Metrics:
-    def metrics(y_testing, prediction, flag=0):
+    def metrics(y_testing, prediction, name, flag=0):
         # argmax restituisce gli indici dei valori massimi lungo un asse
         if flag==0:
             prediction = np.argmax(prediction, axis=1)
@@ -36,7 +36,7 @@ class Metrics:
         confusion_matrix = pd.DataFrame(confusion_matrix, index=labels, columns=labels)
         plt.figure(figsize=(20, 10))
         seaborn.heatmap(confusion_matrix, annot=True)
-        plt.title('Confusion Matrix')
+        plt.title('Confusion Matrix '+name)
         plt.ylabel('Truth Values')
         plt.xlabel('Predicted Values')
         plt.show()

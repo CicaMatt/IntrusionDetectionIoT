@@ -37,7 +37,15 @@ data = StandardScaler().fit_transform(data)
 # data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
 
+# Feature Extraction
+# print("Feature Extraction")
+# data = PCA(80).fit_transform(data)
+# data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net
@@ -69,4 +77,4 @@ print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 
 # METRICS
-Metrics.metrics(y_testing, prediction, flag=1)
+Metrics.metrics(y_testing, prediction, flag=1, name='Naive Bayes')

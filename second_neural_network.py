@@ -1,6 +1,7 @@
 import time
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from tensorflow.keras.models import Sequential
@@ -40,6 +41,16 @@ data = StandardScaler().fit_transform(data)
 # data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
+
+# Feature Extraction
+# print("Feature Extraction")
+# data = PCA(50).fit_transform(data)
+# data = pd.DataFrame(data)
+
 
 # .values restituisce una rappresentazione formato Numpy di un DataFrame, in altre parole trasforma i dati in formato tabellare in un array multidimensionale
 # training data for the neural net
@@ -76,7 +87,7 @@ prediction = model.predict(x_testing)
 print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 # METRICS
-Metrics.metrics(y_testing, prediction)
+Metrics.metrics(y_testing, prediction, name='Second Neural Network')
 
 
 

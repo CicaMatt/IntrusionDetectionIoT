@@ -45,7 +45,7 @@ seaborn.heatmap(correlation_matrix, vmax=.8, square=True)
 plt.show()
 
 # Scatter plot
-print("Scatter plot:")
-seaborn.set()
-seaborn.pairplot(data[list(data.columns)].sample(n=10, replace=False), height=2.5)
-plt.show()
+# print("Scatter plot:")
+# seaborn.set()
+# seaborn.pairplot(data[list(data.columns)].sample(n=10, replace=False), height=2.5)
+# plt.show()

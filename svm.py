@@ -2,7 +2,6 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from scipy.stats import zscore
 from sklearn import svm
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
@@ -41,6 +40,10 @@ data = StandardScaler().fit_transform(data)
 # data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net
@@ -69,4 +72,4 @@ prediction = model.predict(x_testing)
 print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 # METRICS
-Metrics.metrics(y_testing, prediction, flag=1)
+Metrics.metrics(y_testing, prediction, flag=1, name='SVC')

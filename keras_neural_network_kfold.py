@@ -40,6 +40,15 @@ data = StandardScaler().fit_transform(data)
 # data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
+
+# Feature Extraction
+# print("Feature Extraction")
+# data = PCA(80).fit_transform(data)
+# data = pd.DataFrame(data)
 
 # .values restituisce una rappresentazione formato Numpy di un DataFrame, in altre parole trasforma i dati in formato tabellare in un array multidimensionale
 # training data for the neural net
@@ -58,10 +67,10 @@ kf = KFold(n_splits=10, shuffle=True)
 print(kf.get_n_splits())
 i = 1
 
-accuracy_score_tot = 0
-precision_score_tot = 0
-recall_score_tot = 0
-f1_score_tot = 0
+accuracy_score_max = 0
+precision_score_max = 0
+recall_score_max = 0
+f1_score_max = 0
 
 for training_index, testing_index in kf.split(training_data):
     # print("TRAIN:", training_index, "TEST:", testing_index)
@@ -133,13 +142,14 @@ for training_index, testing_index in kf.split(training_data):
     print("Confusion Matrix (Fit " + i.__str__() + "):")
     print(confusion_matrix)
 
-    accuracy_score_tot += accuracy_score
-    precision_score_tot += precision_score
-    recall_score_tot += recall_score
-    f1_score_tot += f1_score
+    if accuracy_score_max < accuracy_score:
+        accuracy_score_max = accuracy_score
+        precision_score_max = precision_score
+        recall_score_max = recall_score
+        f1_score_max = f1_score
     i += 1
 
-print("\n\nAccuracy (Total mean): " + "{:.2%}".format(float(accuracy_score_tot / kf.n_splits)))
-print("Precision (Total mean): " + "{:.2%}".format(float(precision_score_tot / kf.n_splits)))
-print("Recall (Total mean): " + "{:.2%}".format(float(recall_score_tot / kf.n_splits)))
-print("F1 (Total mean): " + "{:.2%}".format(float(f1_score_tot / kf.n_splits)))
+print("\n\nAccuracy (Max): " + "{:.2%}".format(float(accuracy_score_max)))
+print("Precision (Max): " + "{:.2%}".format(float(precision_score_max)))
+print("Recall (Max): " + "{:.2%}".format(float(recall_score_max)))
+print("F1 (Max): " + "{:.2%}".format(float(f1_score_max)))

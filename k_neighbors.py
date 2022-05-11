@@ -1,16 +1,16 @@
 import time
 import numpy as np
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn import neighbors
 from utils.data_setup import DataSetup
 from utils.metrics import Metrics
-from sklearn.feature_selection import SelectKBest, chi2
-
+from sklearn.feature_selection import SelectKBest, chi2, VarianceThreshold
 
 # Data retrieving
-data = DataSetup.data_setup(1)
+data = DataSetup.data_setup(4)
 
 # Data preparation
 # Removing all duplicates
@@ -37,11 +37,20 @@ data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-# for i in data.columns:
-#     data[i] = zscore(data[i])
+# data = StandardScaler().fit_transform(data)
 data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+print("Feature Selection")
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=80).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
+
+# Feature Extraction
+print("Feature Extraction")
+data = PCA(50).fit_transform(data)
+data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net
@@ -49,8 +58,6 @@ training_data = data.values
 
 # labels for training
 labels = labels_full.values
-
-data = SelectKBest(chi2, k=50).fit_transform(training_data, labels)
 
 
 # VALIDATION
@@ -71,4 +78,4 @@ prediction = model.predict(x_testing)
 print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 # METRICS
-Metrics.metrics(y_testing, prediction)
+Metrics.metrics(y_testing, prediction, name='K Neighbors')

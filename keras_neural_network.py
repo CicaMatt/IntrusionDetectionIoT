@@ -2,8 +2,9 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import SelectKBest, chi2, f_classif
+from sklearn.feature_selection import SelectKBest, chi2, VarianceThreshold
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.decomposition import PCA
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
@@ -11,7 +12,7 @@ from utils.data_setup import DataSetup
 from utils.metrics import Metrics
 
 # Data retrieving
-data = DataSetup.data_setup(1)
+data = DataSetup.data_setup(4)
 
 # Removing all duplicates
 data = data.drop_duplicates()
@@ -41,6 +42,17 @@ print("Scaling training set features")
 data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Feature Selection
+# print("Feature Selection")
+# data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
+# data = pd.DataFrame(data)
+
+# Feature Extraction
+# print("Feature Extraction")
+data = PCA(50).fit_transform(data)
+data = pd.DataFrame(data)
+
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net
 training_data = data.values
@@ -48,8 +60,6 @@ training_data = data.values
 # labels for training
 labels = labels_full.values
 
-# data = SelectKBest(chi2, k=50).fit_transform(training_data, labels)
-# print(data.shape[1])
 
 ###KERAS MODEL
 
@@ -57,8 +67,7 @@ labels = labels_full.values
 
 # Train/Test split - 80/20
 print("Validation - 80/20 split")
-x_training, x_testing, y_training, y_testing = train_test_split(training_data, labels, test_size=0.20, random_state=42)
-
+x_training, x_testing, y_training, y_testing = train_test_split(training_data, labels, test_size=0.20, random_state=42, shuffle=True)
 
 # create and fit model
 model = Sequential()
@@ -81,7 +90,7 @@ model.add(Dense(labels.shape[1], activation='softmax'))
 # categorical_crossentropy é usata come funzione di perdita per la classificazione multiclasse
 # quando ci sono due o piú label in output
 # adam é un metodo di stocastica gradiente di discesa basato sulla stima adattiva dei momenti di primo e secondo ordine
-model.compile(loss='categorical_crossentropy', optimizer='adam')
+model.compile(loss='categorical_crossentropy', optimizer='adam', steps_per_execution=3)
 
 # si istanzia un monitor che é in grado di fermare l'addestramento quando una certa metrica ha smesso di migliorare
 # monitor rappresenta la quantitá da monitorare
@@ -109,4 +118,4 @@ prediction = model.predict(x_testing)
 print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 # METRICS
-Metrics.metrics(y_testing, prediction)
+Metrics.metrics(y_testing, prediction, name='Keras Neural Network')
