@@ -10,7 +10,7 @@ from utils.metrics import Metrics
 from sklearn.feature_selection import SelectKBest, chi2, VarianceThreshold
 
 # Data retrieving
-data = DataSetup.data_setup(4)
+data = DataSetup.data_setup(5)
 
 # Data preparation
 # Removing all duplicates
@@ -41,8 +41,28 @@ print("Scaling training set features")
 data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
+# Outliers removal - Z Score approach
+# print("Removing outliers")
+# filtered = (np.abs(data) < 3).all(axis=1)
+# data['type'] = lab
+# data = data[filtered]
+# labels_full = pd.get_dummies(data['type'], prefix='type')
+# data = data.drop(columns='type')
+# print(data.shape)
+
+# Outliers removal - Interquartile Range approach
+# print("Removing outliers")
+# Q1, Q3 = data.quantile(0.25), data.quantile(0.75)
+# IQR = Q3 - Q1
+# IQR_outliers = data[((data < (Q1 - 1.5 * IQR)) |(data > (Q3 + 1.5 * IQR))).any(axis=1)]
+# data = data[~((data < (Q1 - 1.5 * IQR)) |(data > (Q3 + 1.5 * IQR))).any(axis=1)]
+# data['type'] = labels_column
+# labels_full = pd.get_dummies(data['type'], prefix='type')
+# data = data.drop(columns='type')
+# print(data.shape)
+
 # Feature Selection
-print("Feature Selection")
+# print("Feature Selection")
 # data = VarianceThreshold().fit_transform(data)
 # data = SelectKBest(chi2, k=80).fit_transform(data, labels_full)
 # data = pd.DataFrame(data)

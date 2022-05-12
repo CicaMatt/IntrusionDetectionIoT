@@ -17,13 +17,14 @@ class DataSetup:
         mirai_udpplain = pd.read_csv('archive/' + str(set) + '.mirai.udpplain.csv')
 
         # randomly sampling the DataFrames by n=amount entries
-        amount = 15000
+        amount = 25000
+        minor_amount = int(25000/1.5)
         print("DataFrame sampling")
         benign = benign.sample(n=amount, replace=False)
         gafgyt_combo = gafgyt_combo.sample(n=amount, replace=False)
         gafgyt_junk = gafgyt_junk.sample(n=amount, replace=False)
         gafgyt_scan = gafgyt_scan.sample(n=amount, replace=False)
-        gafgyt_tcp = gafgyt_tcp.sample(n=amount, replace=False)
+        gafgyt_tcp = gafgyt_tcp.sample(n=minor_amount, replace=False)
         gafgyt_udp = gafgyt_udp.sample(n=amount, replace=False)
         mirai_ack = mirai_ack.sample(n=amount, replace=False)
         mirai_scan = mirai_scan.sample(n=amount, replace=False)
