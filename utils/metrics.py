@@ -5,12 +5,14 @@ from sklearn import metrics
 import seaborn
 
 
-labels = ['benign', 'gafgyt_combo', 'gafgyt_junk', 'gafgyt_scan', 'gafgyt_tcp',
+total_labels = ['benign', 'gafgyt_combo', 'gafgyt_junk', 'gafgyt_scan', 'gafgyt_tcp',
           'gafgyt_udp', 'mirai_ack', 'mirai_scan', 'mirai_syn', 'mirai_udp', 'mirai_udpplain']
+
+partial_labels = ['benign', 'gafgyt_combo', 'gafgyt_junk', 'gafgyt_scan', 'gafgyt_tcp', 'gafgyt_udp']
 
 
 class Metrics:
-    def metrics(y_testing, prediction, name, flag=0):
+    def metrics(y_testing, prediction, name, flag=0, partial=0):
         # argmax restituisce gli indici dei valori massimi lungo un asse
         if flag==0:
             prediction = np.argmax(prediction, axis=1)
@@ -33,7 +35,10 @@ class Metrics:
         print(multilabel_confusion_matrix)
 
         # Seaborn confusion matrix
-        confusion_matrix = pd.DataFrame(confusion_matrix, index=labels, columns=labels)
+        if partial==1:
+            confusion_matrix = pd.DataFrame(confusion_matrix, index=partial_labels, columns=partial_labels)
+        else:
+            confusion_matrix = pd.DataFrame(confusion_matrix, index=total_labels, columns=total_labels)
         plt.figure(figsize=(20, 10))
         seaborn.heatmap(confusion_matrix, annot=True)
         plt.title('Confusion Matrix '+name)

@@ -19,14 +19,14 @@ print("Shuffling data")
 sampler = np.random.permutation(len(data))
 data = data.take(sampler)
 
-# dummy encode labels, created to be used to check later the belonging to a certain class
-print("Creating a dataset of indicative labels relative to the belonging CSV")
+# dummy encode total_labels, created to be used to check later the belonging to a certain class
+print("Creating a dataset of indicative total_labels relative to the belonging CSV")
 labels_full = pd.get_dummies(data['type'], prefix='type')
 labels_column = data['type']
 # print(labels_column)
 
-# drop labels from training dataset
-print("Deleting labels from the training dataset")
+# drop total_labels from training dataset
+print("Deleting total_labels from the training dataset")
 data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
@@ -70,7 +70,7 @@ data = pd.DataFrame(data)
 # training data for the neural net
 training_data = data.values
 
-# labels for training
+# total_labels for training
 labels = labels_full.values
 
 
@@ -96,4 +96,8 @@ print("Total time: " + str(time.time() - start)[0:7] + "s\n")
 
 
 # METRICS
-Metrics.metrics(y_testing, prediction, flag=1, name='Naive Bayes')
+if labels.shape[1] == 6:
+    partial = 1
+else:
+    partial = 0
+Metrics.metrics(y_testing, prediction, name='Naive Bayes', partial=partial, flag=1)

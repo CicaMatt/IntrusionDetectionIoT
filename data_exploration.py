@@ -17,7 +17,7 @@ m_sy = pd.read_csv('archive/' + set + '.mirai.syn.csv')
 m_u = pd.read_csv('archive/' + set + '.mirai.udp.csv')
 m_u_p = pd.read_csv('archive/' + set + '.mirai.udpplain.csv')
 
-# adding labels to each DataFrame
+# adding total_labels to each DataFrame
 benign['type'] = 'benign'
 m_u['type'] = 'mirai_udp'
 g_c['type'] = 'gafgyt_combo'

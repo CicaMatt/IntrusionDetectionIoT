@@ -10,7 +10,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from utils.data_setup import DataSetup
 
 # Data retrieving
-data = DataSetup.data_setup(5)
+data = DataSetup.data_setup(3)
 # print(data.shape)
 
 # Removing all duplicates
@@ -21,14 +21,14 @@ print("Shuffling data")
 sampler = np.random.permutation(len(data))
 data = data.take(sampler)
 
-# dummy encode labels, created to be used to check later the belonging to a certain class
-print("Creating a dataset of indicative labels relative to the belonging CSV")
+# dummy encode total_labels, created to be used to check later the belonging to a certain class
+print("Creating a dataset of indicative total_labels relative to the belonging CSV")
 labels_full = pd.get_dummies(data['type'], prefix='type')
 labels_column = data['type']
 # print(labels_column)
 
-# drop labels from training dataset
-print("Deleting labels from the training dataset")
+# drop total_labels from training dataset
+print("Deleting total_labels from the training dataset")
 data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
@@ -71,7 +71,7 @@ data = pd.DataFrame(data)
 # parsing data from Dataframe to NumPy array
 # training data for the neural net
 training_data = data.values
-# labels for training
+# total_labels for training
 labels = labels_full.values
 
 ###KERAS MODEL
