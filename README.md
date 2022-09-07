@@ -1,2 +1,4 @@
-# IoT Intrusion Detection System
-credit: Matteo Cicalese
+# Machine Learning per un Sistema di Intrusion Detection per Dispositivi IoT
+
+L’Internet of Things é un mondo in costante evoluzione, che con le innovazioni e i vantaggi che porta oramai costituisce un riferimento fisso nella quotidianità di chiunque. Con un impiego sempre maggiore di queste tecnologie in ogni aspetto delle nostre vite, crescono anche le criticità e i pericoli che é possibile incorrere nell’utilizzo delle stesse. In questa repository é mostrata la progettazione ed implementazione della pipeline di un modello intelligente in grado di fare Intrusion Detection, con la capacità di segnalare la presenza di un eventuale botnet della famiglia Mirai o BASHLITE in diversi dispositivi IoT. 
+Il sistema implementato supera il 99% in tutte le metriche di riferimento, e fa riflettere sulla facilità di impiego di un software del genere per rendere sicuro il proprio ecosistema IoT, oltre a possedere concrete possibilità di estensione per aumentare le tipologie di malware identificabili.e
