@@ -8,7 +8,7 @@ from utils.data_setup import DataSetup
 from utils.metrics import Metrics
 
 # Data retrieving
-data = DataSetup.data_setup(5)
+data = DataSetup.data_setup(6)
 # print(data.shape)
 
 # Removing all duplicates

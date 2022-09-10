@@ -31,9 +31,12 @@ data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
+print(data.shape[0])
 data = StandardScaler().fit_transform(data)
 # data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
+print(data.shape[0])
+
 
 # Outliers removal - Z Score approach
 # print("Removing outliers")

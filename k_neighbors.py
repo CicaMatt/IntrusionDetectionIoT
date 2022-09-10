@@ -10,7 +10,7 @@ from utils.metrics import Metrics
 from sklearn.feature_selection import SelectKBest, chi2, VarianceThreshold
 
 # Data retrieving
-data = DataSetup.data_setup(3)
+data = DataSetup.data_setup(6)
 
 # Data preparation
 # Removing all duplicates
@@ -32,13 +32,13 @@ labels_full = pd.get_dummies(data['type'], prefix='type')
 
 # drop total_labels from training dataset
 # si eliminano le label dal dataset di training
-print("Deleting total_labels from the training dataset")
+print("Deleting 'type' column from the training dataset")
 data = data.drop(columns='type')
 
 # Feature Scaling - Z-Score Normalization
 print("Scaling training set features")
-# data = StandardScaler().fit_transform(data)
-data = MinMaxScaler().fit_transform(data)
+data = StandardScaler().fit_transform(data)
+# data = MinMaxScaler().fit_transform(data)
 data = pd.DataFrame(data)
 
 # Outliers removal - Z Score approach
@@ -62,15 +62,15 @@ data = pd.DataFrame(data)
 # print(data.shape)
 
 # Feature Selection
-# print("Feature Selection")
-# data = VarianceThreshold().fit_transform(data)
+print("Feature Selection")
+data = VarianceThreshold().fit_transform(data)
 # data = SelectKBest(chi2, k=80).fit_transform(data, labels_full)
-# data = pd.DataFrame(data)
+data = pd.DataFrame(data)
 
 # Feature Extraction
-print("Feature Extraction")
-data = PCA(50).fit_transform(data)
-data = pd.DataFrame(data)
+# print("Feature Extraction")
+# data = PCA(80).fit_transform(data)
+# data = pd.DataFrame(data)
 
 # .values trasforma i dati in formato tabellare DataFrame in un array multidimensionale NumPy
 # training data for the neural net

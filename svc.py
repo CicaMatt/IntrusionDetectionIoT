@@ -2,6 +2,7 @@ import time
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
+from sklearn.feature_selection import VarianceThreshold, SelectKBest, chi2
 from sklearn.model_selection import train_test_split
 from sklearn import svm
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -10,7 +11,7 @@ from utils.data_setup import DataSetup
 from utils.metrics import Metrics
 
 # Data retrieving
-data = DataSetup.data_setup(3)
+data = DataSetup.data_setup(6)
 # print(data.shape)
 
 # Removing all duplicates
@@ -58,15 +59,15 @@ data = pd.DataFrame(data)
 # print(data.shape)
 
 # Feature Selection
-# print("Feature Selection")
-# data = VarianceThreshold().fit_transform(data)
-# data = SelectKBest(chi2, k=100).fit_transform(data, labels_full)
-# data = pd.DataFrame(data)
+print("Feature Selection")
+data = VarianceThreshold().fit_transform(data)
+# data = SelectKBest(chi2, k=80).fit_transform(data, labels_full)
+data = pd.DataFrame(data)
 
 # Feature Extraction
 # print("Feature Extraction")
-data = PCA(50).fit_transform(data)
-data = pd.DataFrame(data)
+# data = PCA(50).fit_transform(data)
+# data = pd.DataFrame(data)
 
 # parsing data from Dataframe to NumPy array
 # training data for the neural net

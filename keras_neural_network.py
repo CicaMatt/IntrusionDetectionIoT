@@ -66,9 +66,9 @@ data = pd.DataFrame(data)
 # data = pd.DataFrame(data)
 
 # Feature Extraction
-# print("Feature Extraction")
-# data = PCA(50).fit_transform(data)
-# data = pd.DataFrame(data)
+print("Feature Extraction")
+data = PCA(50).fit_transform(data)
+data = pd.DataFrame(data)
 
 # parsing data from Dataframe to NumPy array
 # training data for the neural net

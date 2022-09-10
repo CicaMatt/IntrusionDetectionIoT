@@ -17,6 +17,23 @@ m_sy = pd.read_csv('archive/' + set + '.mirai.syn.csv')
 m_u = pd.read_csv('archive/' + set + '.mirai.udp.csv')
 m_u_p = pd.read_csv('archive/' + set + '.mirai.udpplain.csv')
 
+# randomly sampling the DataFrames by n=amount entries
+amount = 1000
+minor_amount = int(20000)
+print("DataFrame sampling")
+benign = benign.sample(n=amount, replace=False)
+g_c = g_c.sample(n=amount, replace=False)
+g_j = g_j.sample(n=amount, replace=False)
+g_s = g_s.sample(n=amount, replace=False)
+g_t = g_t.sample(n=amount, replace=False)
+g_u = g_u.sample(n=amount, replace=False)
+if set != 3 and set != 7:
+    m_a = m_a.sample(n=amount, replace=False)
+    m_sc = m_sc.sample(n=amount, replace=False)
+    m_sy = m_sy.sample(n=amount, replace=False)
+    m_u = m_u.sample(n=amount, replace=False)
+    m_u_p = m_u_p.sample(n=amount, replace=False)
+
 # adding total_labels to each DataFrame
 benign['type'] = 'benign'
 m_u['type'] = 'mirai_udp'
@@ -38,14 +55,16 @@ data = pd.concat([benign, m_u, g_c, g_j, g_s, g_t, g_u, m_a, m_sc, m_sy, m_u_p],
 
 
 # Correlation matrix
-print("Correlation matrix:")
-correlation_matrix = data.corr()
-plt.subplots(figsize=(35, 25))
-seaborn.heatmap(correlation_matrix, vmax=.8, square=True)
-plt.show()
+# print("Correlation matrix:")
+# correlation_matrix = data.corr()
+# plt.subplots(figsize=(35, 25))
+# seaborn.heatmap(correlation_matrix, vmax=.8, square=True)
+# plt.show()
 
 # Scatter plot
-# print("Scatter plot:")
-# seaborn.set()
+print("Scatter plot:")
+seaborn.set()
+columns = ['MI_dir_L0.1_weight', 'H_L0.1_weight', 'HH_L0.1_weight', 'HH_jit_L0.1_weight', 'HpHp_L0.1_weight']
+seaborn.pairplot(data[columns], height=2.5)
 # seaborn.pairplot(data[list(data.columns)].sample(n=10, replace=False), height=2.5)
-# plt.show()
+plt.show()
