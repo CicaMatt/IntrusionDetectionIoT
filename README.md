@@ -4,6 +4,9 @@
 Il dataset oggetto di studio utilizzato é scaricabile presso il seguente link: https://www.kaggle.com/datasets/mkashifn/nbaiot-dataset
 In alternativa, é possibile scaricarlo utilizzando l'apposita funzione nel file dataset_download.py, previa modifica del file kaggle.json con gli appositi campi username e key.
 
+# Setup Ambiente
+Per facilitare le operazioni di setup dell'ambiente, nella repository é presente il file intrusiondetection.yml che permette un setup immediato tramite l'apposita console di Anaconda. Per farlo, é necessario lanciare il comando 'conda env create -f intrusiondetection.yml'
+
 ## Descrizione Dataset
 Il dataset, in formato .csv, contiene informazioni relative ad un traffico di dati reale, ottenuto da 9 diversi dispositivi IoT di natura commerciale, infettati in modo autentico da malware della famiglia Mirai e BASHLITE. Il dataset conta 7062606 record, ad ognuno dei quali sono associate 115 features. É presente una suddivisione in 9 sottogruppi che corrispondono ai 9 dispositivi esaminati, e per ognuno di essi é presente un ulteriore partizionamento effettuato in relazione all’attacco a cui sono soggetti. Oltre ai dati sul traffico benigno, sono presenti dati relativi al traffico anomalo, che possono essere divisi in 10 sottogruppi relativi rispettivamente a 10 attacchi portati avanti da reti botnet della famiglia Mirai e BASHLITE, dunque si presta bene per una classificazione multi-classe, per un totale di 10 classi di attacchi più una classe di traffico normale (tali classi sono suddivise sottoforma di file .csv).
 Le relazioni fra le feature sono mostrate nei due grafici presenti nella repository, e sono generabili sul proprio dispositivo eseguendo il file data_exploration.py.
