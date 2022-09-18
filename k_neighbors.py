@@ -10,7 +10,7 @@ from utils.metrics import Metrics
 from sklearn.feature_selection import SelectKBest, chi2, VarianceThreshold
 
 # Data retrieving
-data = DataSetup.data_setup(6)
+data = DataSetup.data_setup(4)
 
 # Data preparation
 # Removing all duplicates

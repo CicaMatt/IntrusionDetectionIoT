@@ -3,19 +3,19 @@ import seaborn
 from matplotlib import pyplot as plt
 
 # reading CSV files based on given 'set' and instantiate a DataFrame
-set = "5"
+set = "4"
 print("CSV file reading")
-benign = pd.read_csv('archive/' + set + '.benign.csv')
-g_c = pd.read_csv('archive/' + set + '.gafgyt.combo.csv')
-g_j = pd.read_csv('archive/' + set + '.gafgyt.junk.csv')
-g_s = pd.read_csv('archive/' + set + '.gafgyt.scan.csv')
-g_t = pd.read_csv('archive/' + set + '.gafgyt.tcp.csv')
-g_u = pd.read_csv('archive/' + set + '.gafgyt.udp.csv')
-m_a = pd.read_csv('archive/' + set + '.mirai.ack.csv')
-m_sc = pd.read_csv('archive/' + set + '.mirai.scan.csv')
-m_sy = pd.read_csv('archive/' + set + '.mirai.syn.csv')
-m_u = pd.read_csv('archive/' + set + '.mirai.udp.csv')
-m_u_p = pd.read_csv('archive/' + set + '.mirai.udpplain.csv')
+benign = pd.read_csv('../archive/' + str(set) + '.benign.csv')
+g_c = pd.read_csv('../archive/' + str(set) + '.gafgyt.combo.csv')
+g_j = pd.read_csv('../archive/' + str(set) + '.gafgyt.junk.csv')
+g_s = pd.read_csv('../archive/' + str(set) + '.gafgyt.scan.csv')
+g_t = pd.read_csv('../archive/' + str(set) + '.gafgyt.tcp.csv')
+g_u = pd.read_csv('../archive/' + str(set) + '.gafgyt.udp.csv')
+m_a = pd.read_csv('../archive/' + str(set) + '.mirai.ack.csv')
+m_sc = pd.read_csv('../archive/' + str(set) + '.mirai.scan.csv')
+m_sy = pd.read_csv('../archive/' + str(set) + '.mirai.syn.csv')
+m_u = pd.read_csv('../archive/' + str(set) + '.mirai.udp.csv')
+m_u_p = pd.read_csv('../archive/' + str(set) + '.mirai.udpplain.csv')
 
 # randomly sampling the DataFrames by n=amount entries
 amount = 1000
@@ -64,7 +64,7 @@ data = pd.concat([benign, m_u, g_c, g_j, g_s, g_t, g_u, m_a, m_sc, m_sy, m_u_p],
 # Scatter plot
 print("Scatter plot:")
 seaborn.set()
-columns = ['MI_dir_L0.1_weight', 'H_L0.1_weight', 'HH_L0.1_weight', 'HH_jit_L0.1_weight', 'HpHp_L0.1_weight']
+columns = ['MI_dir_L5_weight', 'H_L5_weight', 'HH_L5_weight', 'HH_jit_L5_weight', 'HpHp_L5_weight']
 seaborn.pairplot(data[columns], height=2.5)
 # seaborn.pairplot(data[list(data.columns)].sample(n=10, replace=False), height=2.5)
 plt.show()

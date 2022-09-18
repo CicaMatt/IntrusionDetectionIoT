@@ -4,7 +4,7 @@
 Il dataset oggetto di studio utilizzato é scaricabile presso il seguente link: https://www.kaggle.com/datasets/mkashifn/nbaiot-dataset
 In alternativa, é possibile scaricarlo utilizzando l'apposita funzione nel file dataset_download.py, previa modifica del file kaggle.json con gli appositi campi username e key.
 
-# Setup Ambiente
+## Setup Ambiente
 Per facilitare le operazioni di setup dell'ambiente, nella repository é presente il file intrusiondetection.yml che permette un setup immediato tramite l'apposita console di Anaconda. Per farlo, é necessario lanciare il comando 'conda env create -f intrusiondetection.yml'
 
 ## Descrizione Dataset
@@ -28,6 +28,7 @@ Di seguito, sono poi presenti le varie tecniche di preprocessing, esposte in ord
 - Rimozione di outlier con approccio Interquartile Range
 - Feature Selection, con gli approcci di Soglia di Varianza e Selezione delle K migliori features
 - Feature Extraction con approccio PCA
+
 Le tecniche citate sono utilizzabili sia singolarmente, sia opportunamente in modo combinato.
 
 Troviamo poi la fase di validazione tramite train/test split, dove avviene lo splitting 80/20 randomico.
